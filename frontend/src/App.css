@@ -40,3 +40,71 @@
 .read-the-docs {
   color: #888;
 }
+
+body {
+  background: #f8f9fa;
+  font-family: "Inter", Arial, sans-serif;
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.main-content {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+.home-hero {
+  width: 100%;
+  min-height: calc(100vh - 38px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #3b82f6 0%, #9333ea 100%);
+  margin: 0;
+  padding: 0;
+  margin-top: 0 !important;
+}
+
+/* Add spacing for main container */
+.container {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Card grid spacing */
+.g-4 > .col-md-4 {
+  display: flex;
+  justify-content: center;
+}
+
+/* Responsive image for hero */
+.home-hero img {
+  max-width: 300px;
+  width: 100%;
+}
+
+.navbar-thin {
+  height: 37px !important;
+  min-height: 37px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+/* Optionally, reduce the brand and nav link padding for extra thinness */
+.navbar-thin .navbar-brand,
+.navbar-thin .nav-link {
+  height: 37px !important;
+  min-height: 37px !important;
+  line-height: 37px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  font-size: 0.95rem;
+}
+
+.navbar-grey {
+  background-color: #e0e0e0 !important;
+}
