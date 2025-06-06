@@ -14,7 +14,7 @@ import {
   DELETE_PRODUCT_FAILURE,
 } from "./productsReducer";
 
-const API_URL = "/api/products";
+const API_URL = "https://mern-stack-backend-hc8u.onrender.com/api/products";
 
 export const fetchProducts = () => async (dispatch) => {
   dispatch({ type: READ_PRODUCTS_REQUEST });
