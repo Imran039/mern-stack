@@ -1,0 +1,20 @@
+[
+  {
+    "title": "Test Product1",
+    "image": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308",
+    "description": "A sample product with a real image.",
+    "price": 99.99
+  },
+  {
+    "title": "Test Product2",
+    "image": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308",
+    "description": "Another sample product with a real image.",
+    "price": 79.99
+  },
+  {
+    "title": "Test Product3",
+    "image": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308",
+    "description": "A sample product with a real image.",
+    "price": 99.99
+  }
+]

@@ -1,27 +1,51 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
 import ProductModal from "../../components/ProductModal";
+import { Formik } from "formik";
+import * as Yup from "yup";
+import { useDispatch, useSelector } from "react-redux";
+import { createProduct } from "./productsActions";
 import "bootstrap-icons/font/bootstrap-icons.css";
+
+const validationSchema = Yup.object({
+  title: Yup.string().required("Product title is required"),
+  image: Yup.string().url("Enter a valid URL").required("Image is required"),
+  description: Yup.string().required("Description is required"),
+  price: Yup.number()
+    .typeError("Price must be a number")
+    .positive("Price must be a positive number")
+    .required("Price is required"),
+});
 
 const AddProduct = () => {
   const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    banner: "",
-    description: "",
-    price: 0,
-  });
+  const dispatch = useDispatch();
+  const { loading } = useSelector((state) => state.products);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  const initialValues = {
+    title: "",
+    image: "",
+    description: "",
+    price: "",
   };
 
-  const handleSubmit = () => {
-    // In a real app, submit formData to backend or state
-    console.log("Submitted product:", formData);
+  useEffect(() => {
+    if (showModal === false) {
+      // Optionally reset form or state here
+    }
+  }, [showModal]);
+
+  const handleSubmit = (values, { resetForm }) => {
+    dispatch(
+      createProduct({
+        title: values.title,
+        image: values.image,
+        description: values.description,
+        price: Number(values.price),
+      })
+    );
+    resetForm();
     setShowModal(false);
-    setFormData({ name: "", banner: "", description: "", price: 0 });
   };
 
   return (
@@ -29,57 +53,92 @@ const AddProduct = () => {
       <Button variant="primary" onClick={() => setShowModal(true)}>
         <i className="bi bi-plus-circle me-2"></i>Add Product
       </Button>
-      <ProductModal
-        show={showModal}
-        onClose={() => setShowModal(false)}
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
         onSubmit={handleSubmit}
-        title="Add New Product"
-        submitLabel="Add Product"
       >
-        <Form>
-          <Form.Group className="mb-3">
-            <Form.Label>Product Name</Form.Label>
-            <Form.Control
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Enter product name"
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Banner</Form.Label>
-            <Form.Control
-              type="text"
-              name="banner"
-              value={formData.banner}
-              onChange={handleChange}
-              placeholder="Enter banner url"
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Description</Form.Label>
-            <Form.Control
-              as="textarea"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              placeholder="Enter product description"
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Price</Form.Label>
-            <Form.Control
-              type="number"
-              name="price"
-              value={formData.price}
-              onChange={handleChange}
-              min={0}
-            />
-          </Form.Group>
-        </Form>
-      </ProductModal>
+        {({
+          handleSubmit,
+          handleChange,
+          values,
+          errors,
+          touched,
+          handleBlur,
+        }) => (
+          <ProductModal
+            show={showModal}
+            onClose={() => setShowModal(false)}
+            onSubmit={handleSubmit}
+            title="Add New Product"
+            submitLabel={loading ? "Adding..." : "Add Product"}
+          >
+            <Form noValidate onSubmit={handleSubmit}>
+              <Form.Group className="mb-3">
+                <Form.Label>Product Title</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="title"
+                  value={values.title}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  placeholder="Enter product title"
+                  isInvalid={touched.title && !!errors.title}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.title}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Image</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="image"
+                  value={values.image}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  placeholder="Enter image url"
+                  isInvalid={touched.image && !!errors.image}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.image}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Description</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  name="description"
+                  value={values.description}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  placeholder="Enter product description"
+                  isInvalid={touched.description && !!errors.description}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.description}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Price</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="price"
+                  value={values.price}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  min={0}
+                  placeholder="Enter price"
+                  isInvalid={touched.price && !!errors.price}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.price}
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Form>
+          </ProductModal>
+        )}
+      </Formik>
     </>
   );
 };
