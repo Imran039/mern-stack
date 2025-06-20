@@ -14,16 +14,14 @@ import {
   DELETE_PRODUCT_FAILURE,
 } from "./productsReducer";
 
-const API_URL = import.meta.env.PROD
-  ? "https://mern-stack-backend-hc8u.onrender.com/api/products" // Production URL
-  : "/api/products"; // Development URL (proxied)
+const API_PATH = "/api/products";
 
 export const fetchProducts =
   (params = {}) =>
   async (dispatch) => {
     dispatch({ type: READ_PRODUCTS_REQUEST });
     try {
-      const { data } = await api.get(API_URL, { params });
+      const { data } = await api.get(API_PATH, { params });
       dispatch({ type: READ_PRODUCTS_SUCCESS, payload: data });
     } catch (error) {
       dispatch({ type: READ_PRODUCTS_FAILURE, payload: error.message });
@@ -33,7 +31,7 @@ export const fetchProducts =
 export const createProduct = (product) => async (dispatch) => {
   dispatch({ type: CREATE_PRODUCT_REQUEST });
   try {
-    const { data } = await api.post(API_URL, product);
+    const { data } = await api.post(API_PATH, product);
     dispatch({ type: CREATE_PRODUCT_SUCCESS, payload: data });
     dispatch(fetchProducts());
   } catch (error) {
@@ -47,7 +45,7 @@ export const createProduct = (product) => async (dispatch) => {
 export const updateProduct = (id, product) => async (dispatch) => {
   dispatch({ type: UPDATE_PRODUCT_REQUEST });
   try {
-    const { data } = await api.put(`${API_URL}/${id}`, product);
+    const { data } = await api.put(`${API_PATH}/${id}`, product);
     dispatch({ type: UPDATE_PRODUCT_SUCCESS, payload: data });
     dispatch(fetchProducts());
   } catch (error) {
@@ -61,7 +59,7 @@ export const updateProduct = (id, product) => async (dispatch) => {
 export const deleteProduct = (id) => async (dispatch) => {
   dispatch({ type: DELETE_PRODUCT_REQUEST });
   try {
-    await api.delete(`${API_URL}/${id}`);
+    await api.delete(`${API_PATH}/${id}`);
     dispatch({ type: DELETE_PRODUCT_SUCCESS, payload: id });
     dispatch(fetchProducts());
   } catch (error) {

@@ -1,6 +1,10 @@
 import axios from "axios";
 
-const api = axios.create();
+const api = axios.create({
+  baseURL: import.meta.env.PROD
+    ? "https://mern-stack-backend-hc8u.onrender.com" // Production URL
+    : "http://localhost:5000", // Development URL
+});
 
 api.interceptors.request.use(
   (config) => {
