@@ -111,12 +111,11 @@ const Products = () => {
                 placeholder="Search for products..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                style={{ borderRight: "none" }}
               />
               <div className="input-group-append">
                 <span
                   className="input-group-text"
-                  style={{ backgroundColor: "white", borderLeft: "none" }}
+                  style={{ backgroundColor: "#e9ecef" }}
                 >
                   <FaSearch />
                 </span>

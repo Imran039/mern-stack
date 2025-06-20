@@ -2,6 +2,7 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import api from "../api";
+import { Link, useNavigate } from "react-router-dom";
 
 const validationSchema = Yup.object({
   name: Yup.string().required("Name is required"),
@@ -66,202 +67,206 @@ const labelStyle = {
   textAlign: "left",
 };
 
-const Register = () => (
-  <div
-    style={{
-      minHeight: "100vh",
-      background: "#fafbfc",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-    }}
-  >
+const Register = () => {
+  const navigate = useNavigate();
+
+  return (
     <div
       style={{
-        background: "#fff",
-        borderRadius: 10,
-        padding: 32,
-        width: 370,
-        boxShadow: "0 2px 16px rgba(0,0,0,0.07)",
+        minHeight: "100vh",
+        background: "#fafbfc",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
-      {logo}
-      <div style={{ height: 24 }} />
-      <h3
-        className="text-center mb-3"
-        style={{ fontWeight: 500, marginBottom: 24 }}
-      >
-        Sign Up
-      </h3>
-      <Formik
-        initialValues={{
-          name: "",
-          email: "",
-          phone: "",
-          password: "",
-          confirmPassword: "",
+      <div
+        style={{
+          background: "#fff",
+          borderRadius: 10,
+          padding: 32,
+          width: 370,
+          boxShadow: "0 2px 16px rgba(0,0,0,0.07)",
         }}
-        validationSchema={validationSchema}
-        validateOnChange={false}
-        validateOnBlur={true}
-        onSubmit={async (values, { setSubmitting, setFieldError }) => {
-          try {
-            const { name, email, phone, password } = values;
-            const res = await api.post("/api/auth/register", {
-              name,
-              email,
-              phone,
-              password,
-            });
-            console.log(res.data); // Handle successful registration (e.g., redirect)
-            alert("Registration successful!");
-          } catch (err) {
-            if (err.response && err.response.data.msg) {
-              setFieldError("email", err.response.data.msg);
-            } else {
-              console.error(err);
-              alert("An error occurred during registration.");
+      >
+        {logo}
+        <div style={{ height: 24 }} />
+        <h3
+          className="text-center mb-3"
+          style={{ fontWeight: 500, marginBottom: 24 }}
+        >
+          Sign Up
+        </h3>
+        <Formik
+          initialValues={{
+            name: "",
+            email: "",
+            phone: "",
+            password: "",
+            confirmPassword: "",
+          }}
+          validationSchema={validationSchema}
+          validateOnChange={false}
+          validateOnBlur={true}
+          onSubmit={async (values, { setSubmitting, setFieldError }) => {
+            try {
+              const { name, email, phone, password } = values;
+              await api.post("/api/auth/register", {
+                name,
+                email,
+                phone,
+                password,
+              });
+              alert("Registration successful! Please log in.");
+              navigate("/login");
+            } catch (err) {
+              if (err.response && err.response.data.msg) {
+                setFieldError("email", err.response.data.msg);
+              } else {
+                console.error(err);
+                alert("An error occurred during registration.");
+              }
             }
-          }
-          setSubmitting(false);
-        }}
-      >
-        {({ errors, touched, isSubmitting }) => (
-          <Form autoComplete="off">
-            <div className="mb-2">
-              <div style={labelStyle}>Name</div>
-              <Field
-                name="name"
-                type="text"
-                className="form-control"
-                style={inputStyle}
-                autoComplete="name"
-              />
-              {touched.name && errors.name && (
-                <div
-                  style={{
-                    color: "#f25d2a",
-                    fontSize: 13,
-                    marginTop: 2,
-                    fontWeight: 600,
-                    textAlign: "left",
-                  }}
-                >
-                  {errors.name}
-                </div>
-              )}
-            </div>
-            <div className="mb-2">
-              <div style={labelStyle}>Email</div>
-              <Field
-                name="email"
-                type="email"
-                className="form-control"
-                style={inputStyle}
-                autoComplete="email"
-              />
-              {touched.email && errors.email && (
-                <div
-                  style={{
-                    color: "#f25d2a",
-                    fontSize: 13,
-                    marginTop: 2,
-                    fontWeight: 600,
-                    textAlign: "left",
-                  }}
-                >
-                  {errors.email}
-                </div>
-              )}
-            </div>
-            <div className="mb-2">
-              <div style={labelStyle}>Phone</div>
-              <Field
-                name="phone"
-                type="text"
-                className="form-control"
-                style={inputStyle}
-                autoComplete="tel"
-              />
-              {touched.phone && errors.phone && (
-                <div
-                  style={{
-                    color: "#f25d2a",
-                    fontSize: 13,
-                    marginTop: 2,
-                    fontWeight: 600,
-                    textAlign: "left",
-                  }}
-                >
-                  {errors.phone}
-                </div>
-              )}
-            </div>
-            <div className="mb-2">
-              <div style={labelStyle}>Password</div>
-              <Field
-                name="password"
-                type="password"
-                className="form-control"
-                style={inputStyle}
-                autoComplete="new-password"
-              />
-              {touched.password && errors.password && (
-                <div
-                  style={{
-                    color: "#f25d2a",
-                    fontSize: 13,
-                    marginTop: 2,
-                    fontWeight: 600,
-                    textAlign: "left",
-                  }}
-                >
-                  {errors.password}
-                </div>
-              )}
-            </div>
-            <div className="mb-3">
-              <div style={labelStyle}>Confirm Password</div>
-              <Field
-                name="confirmPassword"
-                type="password"
-                className="form-control"
-                style={inputStyle}
-                autoComplete="new-password"
-              />
-              {touched.confirmPassword && errors.confirmPassword && (
-                <div
-                  style={{
-                    color: "#f25d2a",
-                    fontSize: 13,
-                    marginTop: 2,
-                    fontWeight: 600,
-                    textAlign: "left",
-                  }}
-                >
-                  {errors.confirmPassword}
-                </div>
-              )}
-            </div>
-            <button
-              type="submit"
-              className="btn btn-primary w-100"
-              style={{
-                background: "#1877f2",
-                border: 0,
-                fontWeight: 500,
-                height: 44,
-                fontSize: 16,
-              }}
-              disabled={isSubmitting}
-            >
-              Sign Up
-            </button>
-          </Form>
-        )}
-      </Formik>
+            setSubmitting(false);
+          }}
+        >
+          {({ errors, touched, isSubmitting }) => (
+            <Form autoComplete="off">
+              <div className="mb-2">
+                <div style={labelStyle}>Name</div>
+                <Field
+                  name="name"
+                  type="text"
+                  className="form-control"
+                  style={inputStyle}
+                  autoComplete="name"
+                />
+                {touched.name && errors.name && (
+                  <div
+                    style={{
+                      color: "#f25d2a",
+                      fontSize: 13,
+                      marginTop: 2,
+                      fontWeight: 600,
+                      textAlign: "left",
+                    }}
+                  >
+                    {errors.name}
+                  </div>
+                )}
+              </div>
+              <div className="mb-2">
+                <div style={labelStyle}>Email</div>
+                <Field
+                  name="email"
+                  type="email"
+                  className="form-control"
+                  style={inputStyle}
+                  autoComplete="email"
+                />
+                {touched.email && errors.email && (
+                  <div
+                    style={{
+                      color: "#f25d2a",
+                      fontSize: 13,
+                      marginTop: 2,
+                      fontWeight: 600,
+                      textAlign: "left",
+                    }}
+                  >
+                    {errors.email}
+                  </div>
+                )}
+              </div>
+              <div className="mb-2">
+                <div style={labelStyle}>Phone</div>
+                <Field
+                  name="phone"
+                  type="text"
+                  className="form-control"
+                  style={inputStyle}
+                  autoComplete="tel"
+                />
+                {touched.phone && errors.phone && (
+                  <div
+                    style={{
+                      color: "#f25d2a",
+                      fontSize: 13,
+                      marginTop: 2,
+                      fontWeight: 600,
+                      textAlign: "left",
+                    }}
+                  >
+                    {errors.phone}
+                  </div>
+                )}
+              </div>
+              <div className="mb-2">
+                <div style={labelStyle}>Password</div>
+                <Field
+                  name="password"
+                  type="password"
+                  className="form-control"
+                  style={inputStyle}
+                  autoComplete="new-password"
+                />
+                {touched.password && errors.password && (
+                  <div
+                    style={{
+                      color: "#f25d2a",
+                      fontSize: 13,
+                      marginTop: 2,
+                      fontWeight: 600,
+                      textAlign: "left",
+                    }}
+                  >
+                    {errors.password}
+                  </div>
+                )}
+              </div>
+              <div className="mb-3">
+                <div style={labelStyle}>Confirm Password</div>
+                <Field
+                  name="confirmPassword"
+                  type="password"
+                  className="form-control"
+                  style={inputStyle}
+                  autoComplete="new-password"
+                />
+                {touched.confirmPassword && errors.confirmPassword && (
+                  <div
+                    style={{
+                      color: "#f25d2a",
+                      fontSize: 13,
+                      marginTop: 2,
+                      fontWeight: 600,
+                      textAlign: "left",
+                    }}
+                  >
+                    {errors.confirmPassword}
+                  </div>
+                )}
+              </div>
+              <button
+                type="submit"
+                className="btn btn-primary w-100 mt-4"
+                style={{
+                  height: 44,
+                  fontSize: 16,
+                }}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Signing Up..." : "Sign Up"}
+              </button>
+            </Form>
+          )}
+        </Formik>
+        <div className="text-center mt-3">
+          Already have an account? <Link to="/login">Sign In</Link>
+        </div>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default Register;
