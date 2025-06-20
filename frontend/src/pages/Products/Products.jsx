@@ -12,6 +12,7 @@ import {
   Button,
   Form,
   Pagination,
+  InputGroup,
 } from "react-bootstrap";
 import { fetchProducts, updateProduct, deleteProduct } from "./productsActions";
 import { Formik } from "formik";
@@ -105,22 +106,17 @@ const Products = () => {
       <div style={{ paddingTop: "2rem", paddingBottom: "1rem" }}>
         <div className="d-flex justify-content-between align-items-center mb-4 px-3">
           <div className="d-flex align-items-center" style={{ gap: "1rem" }}>
-            <div className="input-group" style={{ maxWidth: "400px" }}>
+            <InputGroup style={{ maxWidth: "400px" }}>
               <Form.Control
                 type="text"
                 placeholder="Search for products..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
-              <div className="input-group-append">
-                <span
-                  className="input-group-text"
-                  style={{ backgroundColor: "#e9ecef" }}
-                >
-                  <FaSearch />
-                </span>
-              </div>
-            </div>
+              <InputGroup.Text style={{ backgroundColor: "#e9ecef" }}>
+                <FaSearch />
+              </InputGroup.Text>
+            </InputGroup>
             <div style={{ position: "relative" }}>
               <Form.Control
                 as="select"
