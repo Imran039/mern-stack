@@ -4,7 +4,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 
 const ProductCard = ({ product, onEdit, onDelete, style }) => {
   return (
-    <Card style={{ width: "18rem", ...style }} key={product.id}>
+    <Card style={{ width: "18rem", ...style }} key={product._id || product.id}>
       <Card.Img variant="top" src={product.image} />
       <Card.Body>
         <Card.Title>{product.title}</Card.Title>

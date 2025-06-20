@@ -14,7 +14,9 @@ import {
   DELETE_PRODUCT_FAILURE,
 } from "./productsReducer";
 
-const API_URL = "https://mern-stack-backend-hc8u.onrender.com/api/products";
+// API URLs - Uncomment the one you want to use
+// const API_URL = "http://localhost:5000/api/products"; // For local development
+const API_URL = "https://mern-stack-backend-hc8u.onrender.com/api/products"; // For production
 
 export const fetchProducts = () => async (dispatch) => {
   dispatch({ type: READ_PRODUCTS_REQUEST });
@@ -57,6 +59,7 @@ export const deleteProduct = (id) => async (dispatch) => {
   try {
     await axios.delete(`${API_URL}/${id}`);
     dispatch({ type: DELETE_PRODUCT_SUCCESS, payload: id });
+    dispatch(fetchProducts());
   } catch (error) {
     dispatch({
       type: DELETE_PRODUCT_FAILURE,

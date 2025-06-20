@@ -67,7 +67,7 @@ const Products = () => {
 
   const handleEditSubmit = (values, { setSubmitting }) => {
     dispatch(
-      updateProduct(selectedProduct.id, {
+      updateProduct(selectedProduct._id, {
         title: values.name,
         image: values.banner,
         description: values.description,
@@ -79,7 +79,7 @@ const Products = () => {
   };
 
   const handleDeleteConfirm = () => {
-    dispatch(deleteProduct(selectedProduct.id));
+    dispatch(deleteProduct(selectedProduct._id));
     setDeleteModal(false);
   };
 
@@ -119,7 +119,7 @@ const Products = () => {
             style={{ display: "flex", justifyContent: "center", gap: "2rem" }}
           >
             {products.map((product) => (
-              <div key={product.id} style={{ maxWidth: 350, width: "100%" }}>
+              <div key={product._id} style={{ maxWidth: 350, width: "100%" }}>
                 <ProductCard
                   product={product}
                   onEdit={handleEdit}
@@ -131,7 +131,7 @@ const Products = () => {
         ) : (
           <Row className="g-4 justify-content-center products-grid">
             {products.map((product) => (
-              <Col key={product.id} md={4}>
+              <Col key={product._id} md={4}>
                 <ProductCard
                   product={product}
                   onEdit={handleEdit}
