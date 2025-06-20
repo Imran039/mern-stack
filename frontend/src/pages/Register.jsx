@@ -1,9 +1,10 @@
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import api from "../api";
 
 const validationSchema = Yup.object({
-  fullname: Yup.string().required("Fullname is required"),
+  name: Yup.string().required("Name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
   phone: Yup.string()
     .matches(/^\d{10,15}$/, "Phone must be 10 to 15 digits")
@@ -12,7 +13,7 @@ const validationSchema = Yup.object({
     .min(6, "Password must be at least 6 characters")
     .required("Password is required"),
   confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password"), null], "Password don't match")
+    .oneOf([Yup.ref("password"), null], "Passwords don't match")
     .required("Confirm your password"),
 });
 
@@ -54,6 +55,7 @@ const inputStyle = {
   borderRadius: 6,
   border: "1px solid #d1d5db",
   marginBottom: 0,
+  backgroundColor: "#ffffff",
 };
 
 const labelStyle = {
@@ -93,7 +95,7 @@ const Register = () => (
       </h3>
       <Formik
         initialValues={{
-          fullname: "",
+          name: "",
           email: "",
           phone: "",
           password: "",
@@ -102,35 +104,40 @@ const Register = () => (
         validationSchema={validationSchema}
         validateOnChange={false}
         validateOnBlur={true}
-        onSubmit={(values, { setTouched, validateForm }) => {
-          // On submit, touch all fields to show all errors
-          validateForm().then((errors) => {
-            if (Object.keys(errors).length > 0) {
-              setTouched({
-                fullname: true,
-                email: true,
-                phone: true,
-                password: true,
-                confirmPassword: true,
-              });
+        onSubmit={async (values, { setSubmitting, setFieldError }) => {
+          try {
+            const { name, email, phone, password } = values;
+            const res = await api.post("/api/auth/register", {
+              name,
+              email,
+              phone,
+              password,
+            });
+            console.log(res.data); // Handle successful registration (e.g., redirect)
+            alert("Registration successful!");
+          } catch (err) {
+            if (err.response && err.response.data.msg) {
+              setFieldError("email", err.response.data.msg);
             } else {
-              alert(JSON.stringify(values, null, 2));
+              console.error(err);
+              alert("An error occurred during registration.");
             }
-          });
+          }
+          setSubmitting(false);
         }}
       >
-        {({ errors, touched }) => (
+        {({ errors, touched, isSubmitting }) => (
           <Form autoComplete="off">
             <div className="mb-2">
-              <div style={labelStyle}>Fullname</div>
+              <div style={labelStyle}>Name</div>
               <Field
-                name="fullname"
+                name="name"
                 type="text"
                 className="form-control"
                 style={inputStyle}
-                autoComplete="off"
+                autoComplete="name"
               />
-              {touched.fullname && errors.fullname && (
+              {touched.name && errors.name && (
                 <div
                   style={{
                     color: "#f25d2a",
@@ -140,7 +147,7 @@ const Register = () => (
                     textAlign: "left",
                   }}
                 >
-                  {errors.fullname}
+                  {errors.name}
                 </div>
               )}
             </div>
@@ -151,7 +158,7 @@ const Register = () => (
                 type="email"
                 className="form-control"
                 style={inputStyle}
-                autoComplete="off"
+                autoComplete="email"
               />
               {touched.email && errors.email && (
                 <div
@@ -174,7 +181,7 @@ const Register = () => (
                 type="text"
                 className="form-control"
                 style={inputStyle}
-                autoComplete="off"
+                autoComplete="tel"
               />
               {touched.phone && errors.phone && (
                 <div
@@ -198,7 +205,6 @@ const Register = () => (
                 className="form-control"
                 style={inputStyle}
                 autoComplete="new-password"
-                placeholder=""
               />
               {touched.password && errors.password && (
                 <div
@@ -222,7 +228,6 @@ const Register = () => (
                 className="form-control"
                 style={inputStyle}
                 autoComplete="new-password"
-                placeholder=""
               />
               {touched.confirmPassword && errors.confirmPassword && (
                 <div
@@ -248,6 +253,7 @@ const Register = () => (
                 height: 44,
                 fontSize: 16,
               }}
+              disabled={isSubmitting}
             >
               Sign Up
             </button>

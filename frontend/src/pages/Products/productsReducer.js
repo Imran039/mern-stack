@@ -42,8 +42,10 @@ export default function productsReducer(state = initialState, action) {
       return {
         ...state,
         loading: false,
-        items: action.payload,
-        success: null,
+        items: action.payload.products,
+        totalPages: action.payload.totalPages,
+        currentPage: action.payload.currentPage,
+        error: null,
       };
     case UPDATE_PRODUCT_SUCCESS:
       return {

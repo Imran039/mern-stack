@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "../../api";
 import {
   CREATE_PRODUCT_REQUEST,
   CREATE_PRODUCT_SUCCESS,
@@ -14,25 +14,28 @@ import {
   DELETE_PRODUCT_FAILURE,
 } from "./productsReducer";
 
-// API URLs - Uncomment the one you want to use
-// const API_URL = "http://localhost:5000/api/products"; // For local development
-const API_URL = "https://mern-stack-backend-hc8u.onrender.com/api/products"; // For production
+const API_URL = import.meta.env.PROD
+  ? "https://mern-stack-backend-hc8u.onrender.com/api/products" // Production URL
+  : "/api/products"; // Development URL (proxied)
 
-export const fetchProducts = () => async (dispatch) => {
-  dispatch({ type: READ_PRODUCTS_REQUEST });
-  try {
-    const { data } = await axios.get(API_URL);
-    dispatch({ type: READ_PRODUCTS_SUCCESS, payload: data });
-  } catch (error) {
-    dispatch({ type: READ_PRODUCTS_FAILURE, payload: error.message });
-  }
-};
+export const fetchProducts =
+  (params = {}) =>
+  async (dispatch) => {
+    dispatch({ type: READ_PRODUCTS_REQUEST });
+    try {
+      const { data } = await api.get(API_URL, { params });
+      dispatch({ type: READ_PRODUCTS_SUCCESS, payload: data });
+    } catch (error) {
+      dispatch({ type: READ_PRODUCTS_FAILURE, payload: error.message });
+    }
+  };
 
 export const createProduct = (product) => async (dispatch) => {
   dispatch({ type: CREATE_PRODUCT_REQUEST });
   try {
-    const { data } = await axios.post(API_URL, product);
+    const { data } = await api.post(API_URL, product);
     dispatch({ type: CREATE_PRODUCT_SUCCESS, payload: data });
+    dispatch(fetchProducts());
   } catch (error) {
     dispatch({
       type: CREATE_PRODUCT_FAILURE,
@@ -44,8 +47,9 @@ export const createProduct = (product) => async (dispatch) => {
 export const updateProduct = (id, product) => async (dispatch) => {
   dispatch({ type: UPDATE_PRODUCT_REQUEST });
   try {
-    const { data } = await axios.put(`${API_URL}/${id}`, product);
+    const { data } = await api.put(`${API_URL}/${id}`, product);
     dispatch({ type: UPDATE_PRODUCT_SUCCESS, payload: data });
+    dispatch(fetchProducts());
   } catch (error) {
     dispatch({
       type: UPDATE_PRODUCT_FAILURE,
@@ -57,7 +61,7 @@ export const updateProduct = (id, product) => async (dispatch) => {
 export const deleteProduct = (id) => async (dispatch) => {
   dispatch({ type: DELETE_PRODUCT_REQUEST });
   try {
-    await axios.delete(`${API_URL}/${id}`);
+    await api.delete(`${API_URL}/${id}`);
     dispatch({ type: DELETE_PRODUCT_SUCCESS, payload: id });
     dispatch(fetchProducts());
   } catch (error) {
