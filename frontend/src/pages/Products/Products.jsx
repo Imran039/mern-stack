@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import AddProduct from "./AddProduct";
-import ProductCard from "../../components/ProductCard";
+import { Suspense, lazy } from "react";
+import SkeletonCard from "../../components/SkeletonCard";
 import Empty from "../../components/Empty";
 import {
   Container,
@@ -19,6 +19,9 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import { FaSearch, FaChevronDown } from "react-icons/fa";
+
+const ProductCard = lazy(() => import("../../components/ProductCard"));
+const AddProduct = lazy(() => import("./AddProduct"));
 
 const editValidationSchema = Yup.object({
   title: Yup.string().required("Product name is required"),
@@ -146,13 +149,21 @@ const Products = () => {
             </div>
           </div>
           <div>
-            <AddProduct />
+            <Suspense fallback={<SkeletonCard />}>
+              <AddProduct />
+            </Suspense>
           </div>
         </div>
 
         {loading && (
           <div className="text-center my-5">
-            <Spinner animation="border" />
+            <Row className="g-4 justify-content-center products-grid">
+              {[...Array(6)].map((_, idx) => (
+                <Col key={idx} md={4}>
+                  <SkeletonCard />
+                </Col>
+              ))}
+            </Row>
           </div>
         )}
         {!loading && products.length === 0 ? (
@@ -162,27 +173,31 @@ const Products = () => {
             className="products-grid"
             style={{ display: "flex", justifyContent: "center", gap: "2rem" }}
           >
-            {products.map((product) => (
-              <div key={product._id} style={{ maxWidth: 350, width: "100%" }}>
-                <ProductCard
-                  product={product}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                />
-              </div>
-            ))}
+            <Suspense fallback={<SkeletonCard />}>
+              {products.map((product) => (
+                <div key={product._id} style={{ maxWidth: 350, width: "100%" }}>
+                  <ProductCard
+                    product={product}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                  />
+                </div>
+              ))}
+            </Suspense>
           </div>
         ) : (
           <Row className="g-4 justify-content-center products-grid">
-            {products.map((product) => (
-              <Col key={product._id} md={4}>
-                <ProductCard
-                  product={product}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                />
-              </Col>
-            ))}
+            <Suspense fallback={<SkeletonCard />}>
+              {products.map((product) => (
+                <Col key={product._id} md={4}>
+                  <ProductCard
+                    product={product}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                  />
+                </Col>
+              ))}
+            </Suspense>
           </Row>
         )}
         <Row className="mt-4">

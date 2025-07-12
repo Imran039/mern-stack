@@ -16,11 +16,8 @@ import Header from "./components/Header";
 
 function App() {
   const location = useLocation();
-  const isAuthenticated = !!localStorage.getItem("token");
   const showHeader =
-    isAuthenticated &&
-    location.pathname !== "/login" &&
-    location.pathname !== "/register";
+    location.pathname !== "/login" && location.pathname !== "/register";
 
   return (
     <>
@@ -28,8 +25,8 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/" element={<PrivateRoute />}>
-          <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home />} />
+        <Route element={<PrivateRoute />}>
           <Route path="/products" element={<Products />} />
           <Route path="/contact" element={<Contact />} />
         </Route>
